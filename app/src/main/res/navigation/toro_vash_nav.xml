@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toro_vash_nav"
+    app:startDestination="@id/homePageFragment">
+
+    <fragment
+        android:id="@+id/homePageFragment"
+        android:name="com.moamedevloper.ToroVash.HomePageFragment"
+        android:label="fragment_home_page"
+        tools:layout="@layout/fragment_home_page" >
+        <action
+            android:id="@+id/HomeToSolo"
+            app:destination="@id/soloModeFragment" />
+        <action
+            android:id="@+id/HomeToCreate"
+            app:destination="@id/createJoinFragment" />
+        <argument
+            android:name="isConnected"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/soloModeFragment"
+        android:name="com.moamedevloper.ToroVash.SoloModeFragment"
+        android:label="fragment_solo_mode"
+        tools:layout="@layout/fragment_solo_mode" />
+    <fragment
+        android:id="@+id/multiModeFragment"
+        android:name="com.moamedevloper.ToroVash.MultiModeFragment"
+        android:label="fragment_multi_mode"
+        tools:layout="@layout/fragment_multi_mode" >
+        <argument
+            android:name="chosenGameCode"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/createJoinFragment"
+        android:name="com.moamedevloper.ToroVash.CreateJoinFragment"
+        android:label="fragment_create_join"
+        tools:layout="@layout/fragment_create_join" >
+        <action
+            android:id="@+id/CreateToMul"
+            app:destination="@id/multiModeFragment" />
+    </fragment>
+</navigation>
