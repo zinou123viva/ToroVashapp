@@ -17,8 +17,8 @@
             android:id="@+id/HomeToCreate"
             app:destination="@id/createJoinFragment" />
         <argument
-            android:name="isConnected"
-            app:argType="boolean" />
+            android:name="Data"
+            app:argType="com.moamedevloper.ToroVash.Data" />
     </fragment>
     <fragment
         android:id="@+id/soloModeFragment"
