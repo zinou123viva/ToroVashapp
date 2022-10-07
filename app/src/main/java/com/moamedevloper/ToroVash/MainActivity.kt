@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-         hideSystemBars()
         testTv = findViewById(R.id.testTv)
        /* val homeFrament : Fragment =HomePageFragment()
         val bundle = Bundle()

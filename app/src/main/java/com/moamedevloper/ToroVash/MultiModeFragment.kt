@@ -8,10 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.Chronometer
+import android.widget.TextView
 import android.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MultiModeFragment : Fragment() {
@@ -36,6 +41,8 @@ class MultiModeFragment : Fragment() {
     private lateinit var dbRef: DatabaseReference
     lateinit var player:String
     lateinit var choosedGameCode:String
+    lateinit var timer:Chronometer
+    lateinit var testTv : TextView
     var numberOfTry=1
 
     override fun onCreateView(
@@ -51,6 +58,7 @@ class MultiModeFragment : Fragment() {
         gettingTheNumber(player, choosedGameCode)
 
         btnView.setOnClickListener {
+
             confirmbtn()
         }
 
@@ -58,8 +66,8 @@ class MultiModeFragment : Fragment() {
         return view
     }
     private fun confirmbtn() {
+        timer.start()
         numberEntered = numberEntredField.text!!.toString()
-
         if (duplicateCount(numberEntered) > 0 || numberEntered.length != 4) {
             numberEntredField.error = "invalid input"
         } else {
@@ -102,6 +110,8 @@ class MultiModeFragment : Fragment() {
         recentTryNumberField = view.findViewById(R.id.Recent_try_number)
         btnView = view.findViewById(R.id.button)
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
+        timer= view.findViewById(R.id.simpleChronometer)
+        testTv = view.findViewById(R.id.testTvMul)
 
     }
 
@@ -118,7 +128,7 @@ class MultiModeFragment : Fragment() {
             resultToro = resultTor
             resultVash = resultVas
         }
-        if (selectednumber.isNotEmpty()) {
+        if (selectednumber!="null") {
             if (numberEntredField.text.toString().isNotEmpty()) {
                 numberEntered = numberEntredField.text!!.toString()
 
@@ -127,18 +137,24 @@ class MultiModeFragment : Fragment() {
                     resultToro += " \n 4T "
                     resultNumber += "\n $numberEntered "
                     numberEntredField.clearFocus()
-                    /*to force hide keyboard
-                    this.numberEntredField.let { view ->
-                        val imm =
-                            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                        imm?.hideSoftInputFromWindow(view.windowToken, 0)
+                    if (player == "1") {
+                        dbRef.child(choosedGameCode).child("TryPlayer1").setValue(numberOfTry)
+                    }else {
+                        dbRef.child(choosedGameCode).child("TryPlayer2").setValue(numberOfTry)
                     }
-                    AlertDialog.Builder(this)
-                        .setTitle("You Found It!!")
-                        .setMessage("\nCongratulation that was so smart \n\n    Try : $numberOfTry  " +
-                                "\n\n    The Number Was : $selectednumber\n")
-                        .show()
-                     */
+
+                /*to force hide keyboard
+                        this.numberEntredField.let { view ->
+                            val imm =
+                                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+                        }
+                        AlertDialog.Builder(this)
+                            .setTitle("You Found It!!")
+                            .setMessage("\nCongratulation that was so smart \n\n    Try : $numberOfTry  " +
+                                    "\n\n    The Number Was : $selectednumber\n")
+                            .show()
+                         */
 
                 } else {
                     for (count1 in 0..3) {
