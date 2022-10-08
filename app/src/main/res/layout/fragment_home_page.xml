@@ -66,9 +66,11 @@
         android:layout_width="0dp"
         android:layout_height="50sp"
         android:text="TextView"
+        android:visibility="invisible"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/solo_btn"
         app:layout_constraintEnd_toEndOf="@+id/solo_btn"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/solo_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

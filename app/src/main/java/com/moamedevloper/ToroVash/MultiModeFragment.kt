@@ -1,24 +1,20 @@
 package com.moamedevloper.ToroVash
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.Chronometer
-import android.widget.TextView
-import android.widget.Toolbar
-import androidx.appcompat.app.AlertDialog
+import android.widget.*
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
+import kotlinx.coroutines.delay
 import java.util.*
-import kotlin.collections.ArrayList
 
-
+var delay = 0L
 class MultiModeFragment : Fragment() {
     internal lateinit var view: View
     private lateinit var numberEntredField: TextInputEditText
@@ -39,23 +35,26 @@ class MultiModeFragment : Fragment() {
     var resultToro: String = ""
     var resultVash: String = ""
     private lateinit var dbRef: DatabaseReference
-    lateinit var player:String
-    lateinit var choosedGameCode:String
-    lateinit var timer:Chronometer
-    lateinit var testTv : TextView
-    var numberOfTry=1
+    lateinit var player: String
+    lateinit var choosedGameCode: String
+    lateinit var timer: Chronometer
+    lateinit var testTv: TextView
+    lateinit var waitFried: TextView
+    var friendsTry = "null"
+
+    var numberOfTry = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        view= inflater.inflate(R.layout.fragment_multi_mode, container, false)
+        view = inflater.inflate(R.layout.fragment_multi_mode, container, false)
         inisialise()
         choosedGameCode = requireArguments().getString("chosenGameCode").toString()
         player = requireArguments().getString("playerId").toString()
 
-        gettingTheNumber(player, choosedGameCode)
+        gettingTheNumber()
 
         btnView.setOnClickListener {
 
@@ -65,6 +64,7 @@ class MultiModeFragment : Fragment() {
 
         return view
     }
+
     private fun confirmbtn() {
         timer.start()
         numberEntered = numberEntredField.text!!.toString()
@@ -75,7 +75,7 @@ class MultiModeFragment : Fragment() {
         }
     }
 
-    private fun gettingTheNumber(player: String, choosedGameCode: String) {
+    private fun gettingTheNumber() {
         if (player == "1") {
             dbRef.child(choosedGameCode).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -83,7 +83,6 @@ class MultiModeFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
                 }
 
             })
@@ -110,17 +109,18 @@ class MultiModeFragment : Fragment() {
         recentTryNumberField = view.findViewById(R.id.Recent_try_number)
         btnView = view.findViewById(R.id.button)
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
-        timer= view.findViewById(R.id.simpleChronometer)
+        timer = view.findViewById(R.id.simpleChronometer)
         testTv = view.findViewById(R.id.testTvMul)
-
+        waitFried = view.findViewById(R.id.waitFriend)
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun returnedresult(
         selectednumber: String,
         resultNumbe: String,
         resultTor: String,
-        resultVas: String
+        resultVas: String,
     ) {
 
         if (!sinew) {
@@ -128,7 +128,7 @@ class MultiModeFragment : Fragment() {
             resultToro = resultTor
             resultVash = resultVas
         }
-        if (selectednumber!="null") {
+        if (selectednumber != "null") {
             if (numberEntredField.text.toString().isNotEmpty()) {
                 numberEntered = numberEntredField.text!!.toString()
 
@@ -138,23 +138,73 @@ class MultiModeFragment : Fragment() {
                     resultNumber += "\n $numberEntered "
                     numberEntredField.clearFocus()
                     if (player == "1") {
-                        dbRef.child(choosedGameCode).child("TryPlayer1").setValue(numberOfTry)
-                    }else {
-                        dbRef.child(choosedGameCode).child("TryPlayer2").setValue(numberOfTry)
+                        dbRef.child(choosedGameCode).child("tryPl1").setValue(numberOfTry)
+                       gettingTry()
+
+                        /*if (friendsTry == null){
+                            waitFried.text = "Friend Still Trying To Find Out The Number"
+                        }else if (friendsTry > numberOfTry.toString() ){
+                            Toast.makeText(activity,"You win",Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(activity,"You lost",Toast.LENGTH_SHORT).show()
+                        }
+                        Timer().scheduleAtFixedRate(object : TimerTask() {
+                            override fun run() {
+                                //your method
+                            }
+                        }, 0, 1000) //put here time 1000 milliseconds=1 second
+*/
+
+                    } else {
+                        dbRef.child(choosedGameCode).child("tryPl2").setValue(numberOfTry)
+                        delay = 1000L
+                        RepeatHelper.repeatDelayed() {
+                            gettingTry()
+                            if (friendsTry == "null") {
+                                waitFried.isVisible = true
+                                waitFried.text = "Friend Still Trying To Find Out The Number ..."
+
+                            }
+                            else if (friendsTry > (numberOfTry-1).toString() ){
+                                waitFried.isVisible = false
+                                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
+                                testTv.isVisible = true
+                                testTv.text = msg*/
+                                Toast.makeText(activity,"You win",Toast.LENGTH_SHORT).show()
+                                delay = 0L
+                            }else if (friendsTry < (numberOfTry-1).toString() ){
+                                waitFried.isVisible = false
+                                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
+                                testTv.isVisible = true
+                                testTv.text = msg*/
+                                Toast.makeText(activity,"You lost",Toast.LENGTH_SHORT).show()
+                                delay = 0L
+                            }else {
+                                waitFried.isVisible = false
+                                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
+                                testTv.isVisible = true
+                                testTv.text = msg*/
+                                Toast.makeText(activity,"Draw",Toast.LENGTH_SHORT).show()
+                                delay = 0L
+                            }
+
+                        }
+
+
                     }
 
-                /*to force hide keyboard
-                        this.numberEntredField.let { view ->
-                            val imm =
-                                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                            imm?.hideSoftInputFromWindow(view.windowToken, 0)
-                        }
-                        AlertDialog.Builder(this)
-                            .setTitle("You Found It!!")
-                            .setMessage("\nCongratulation that was so smart \n\n    Try : $numberOfTry  " +
-                                    "\n\n    The Number Was : $selectednumber\n")
-                            .show()
-                         */
+                    /*to force hide keyboard
+                            this.numberEntredField.let { view ->
+                                val imm =
+                                    getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                                imm?.hideSoftInputFromWindow(view.windowToken, 0)
+                            }
+                            AlertDialog.Builder(this)
+                                .setTitle("You Found It!!")
+                                .setMessage("\nCongratulation that was so smart \n\n    Try : $numberOfTry  " +
+                                        "\n\n    The Number Was : $selectednumber\n")
+                                .show()
+                             */
 
                 } else {
                     for (count1 in 0..3) {
@@ -195,6 +245,43 @@ class MultiModeFragment : Fragment() {
             }
         } else {
             numberEntredField.error = "Waiting your friend to choose a number"
+        }
+    }
+    object RepeatHelper {
+        fun repeatDelayed(todo: () -> Unit) {
+            val handler = Handler()
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    todo()
+                    if (delay != 0L) {
+                        handler.postDelayed(this, delay)
+                    }
+                }
+            }, delay)
+        }
+    }
+
+    private fun gettingTry() {
+        if (player == "1") {
+            dbRef.child(choosedGameCode).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    friendsTry = snapshot.child("tryPl2").value.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+
+            })
+        } else if (player == "2") {
+            dbRef.child(choosedGameCode).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    friendsTry = snapshot.child("tryPl1").value.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+
+            })
         }
     }
 
