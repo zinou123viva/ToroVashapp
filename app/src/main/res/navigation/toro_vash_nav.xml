@@ -33,6 +33,9 @@
         <argument
             android:name="chosenGameCode"
             app:argType="string" />
+        <action
+            android:id="@+id/action_multiModeFragment_to_homePageFragment"
+            app:destination="@id/homePageFragment" />
     </fragment>
     <fragment
         android:id="@+id/createJoinFragment"
@@ -41,6 +44,7 @@
         tools:layout="@layout/fragment_create_join" >
         <action
             android:id="@+id/CreateToMul"
-            app:destination="@id/multiModeFragment" />
+            app:destination="@id/multiModeFragment"
+            app:launchSingleTop="false" />
     </fragment>
 </navigation>

@@ -1,20 +1,23 @@
 package com.moamedevloper.ToroVash
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
-import kotlinx.coroutines.delay
 import java.util.*
 
 var delay = 0L
+
 class MultiModeFragment : Fragment() {
     internal lateinit var view: View
     private lateinit var numberEntredField: TextInputEditText
@@ -50,8 +53,41 @@ class MultiModeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_multi_mode, container, false)
+
+
         inisialise()
+        activity?.let {
+            requireActivity()
+                .onBackPressedDispatcher
+                .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        // Do custom work here
+                        val builder = AlertDialog.Builder(activity)
+                        builder.setMessage("Are you sure to quite the game")
+                        builder.setPositiveButton("Cancel"){ _, _ ->
+                        }
+                        builder.setNeutralButton("Sure") { _, _ ->
+                            Navigation.findNavController(view).navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                            dbRef.child(choosedGameCode).removeValue()
+                        }
+                        builder.setCancelable(true)
+                        builder.create()
+                        builder.show()
+                    }
+                }
+                )
+        }
+       /*val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                TODO("Not yet implemented")
+
+            }
+
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callback)
+        */
         choosedGameCode = requireArguments().getString("chosenGameCode").toString()
+
         player = requireArguments().getString("playerId").toString()
 
         gettingTheNumber()
@@ -59,6 +95,7 @@ class MultiModeFragment : Fragment() {
         btnView.setOnClickListener {
 
             confirmbtn()
+
         }
 
 
@@ -139,58 +176,10 @@ class MultiModeFragment : Fragment() {
                     numberEntredField.clearFocus()
                     if (player == "1") {
                         dbRef.child(choosedGameCode).child("tryPl1").setValue(numberOfTry)
-                       gettingTry()
-
-                        /*if (friendsTry == null){
-                            waitFried.text = "Friend Still Trying To Find Out The Number"
-                        }else if (friendsTry > numberOfTry.toString() ){
-                            Toast.makeText(activity,"You win",Toast.LENGTH_SHORT).show()
-                        }else{
-                            Toast.makeText(activity,"You lost",Toast.LENGTH_SHORT).show()
-                        }
-                        Timer().scheduleAtFixedRate(object : TimerTask() {
-                            override fun run() {
-                                //your method
-                            }
-                        }, 0, 1000) //put here time 1000 milliseconds=1 second
-*/
-
+                        theWinner()
                     } else {
                         dbRef.child(choosedGameCode).child("tryPl2").setValue(numberOfTry)
-                        delay = 1000L
-                        RepeatHelper.repeatDelayed() {
-                            gettingTry()
-                            if (friendsTry == "null") {
-                                waitFried.isVisible = true
-                                waitFried.text = "Friend Still Trying To Find Out The Number ..."
-
-                            }
-                            else if (friendsTry > (numberOfTry-1).toString() ){
-                                waitFried.isVisible = false
-                                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
-                                testTv.isVisible = true
-                                testTv.text = msg*/
-                                Toast.makeText(activity,"You win",Toast.LENGTH_SHORT).show()
-                                delay = 0L
-                            }else if (friendsTry < (numberOfTry-1).toString() ){
-                                waitFried.isVisible = false
-                                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
-                                testTv.isVisible = true
-                                testTv.text = msg*/
-                                Toast.makeText(activity,"You lost",Toast.LENGTH_SHORT).show()
-                                delay = 0L
-                            }else {
-                                waitFried.isVisible = false
-                                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
-                                testTv.isVisible = true
-                                testTv.text = msg*/
-                                Toast.makeText(activity,"Draw",Toast.LENGTH_SHORT).show()
-                                delay = 0L
-                            }
-
-                        }
-
-
+                        theWinner()
                     }
 
                     /*to force hide keyboard
@@ -208,9 +197,9 @@ class MultiModeFragment : Fragment() {
 
                 } else {
                     for (count1 in 0..3) {
-                        if (selectednumber[count1] == numberEntered[count1]) toro += 1
+                        if (selectednumber[count1] == numberEntered[count1]) toro ++
                         for (count2 in 0..3) {
-                            if (selectednumber[count1] == numberEntered[count2] && count1 != count2) vash += 1
+                            if (selectednumber[count1] == numberEntered[count2] && count1 != count2) vash ++
                         }
                     }
                     if (toro == 0 && vash == 0) {
@@ -247,6 +236,41 @@ class MultiModeFragment : Fragment() {
             numberEntredField.error = "Waiting your friend to choose a number"
         }
     }
+
+    private fun theWinner() {
+        delay = 1000L
+        RepeatHelper.repeatDelayed() {
+            gettingTry()
+            if (friendsTry == "null") {
+                waitFried.isVisible = true
+                waitFried.text = "Friend Still Trying To Find Out The Number ..."
+
+            } else if (friendsTry > (numberOfTry - 1).toString()) {
+                waitFried.isVisible = false
+                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
+                                testTv.isVisible = true
+                                testTv.text = msg*/
+                Toast.makeText(activity, "You win", Toast.LENGTH_SHORT).show()
+                delay = 0L
+            } else if (friendsTry < (numberOfTry - 1).toString()) {
+                waitFried.isVisible = false
+                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
+                                testTv.isVisible = true
+                                testTv.text = msg*/
+                Toast.makeText(activity, "You lost", Toast.LENGTH_SHORT).show()
+                delay = 0L
+            } else {
+                waitFried.isVisible = false
+                /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
+                                testTv.isVisible = true
+                                testTv.text = msg*/
+                Toast.makeText(activity, "Draw", Toast.LENGTH_SHORT).show()
+                delay = 0L
+            }
+
+        }
+    }
+
     object RepeatHelper {
         fun repeatDelayed(todo: () -> Unit) {
             val handler = Handler()

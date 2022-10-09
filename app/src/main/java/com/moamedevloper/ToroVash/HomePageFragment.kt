@@ -1,5 +1,6 @@
 package com.moamedevloper.ToroVash
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -13,10 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.res.TypedArrayUtils.getBoolean
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import java.lang.Boolean.getBoolean
 import java.lang.reflect.Array.getBoolean
 
@@ -59,6 +62,26 @@ class HomePageFragment : Fragment() {
 
 
          */
+        activity?.let {
+            requireActivity()
+                .onBackPressedDispatcher
+                .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        // Do custom work here
+                        val builder = AlertDialog.Builder(activity)
+                        builder.setMessage("Are you sure to quite the game")
+                        builder.setPositiveButton("Cancel"){ _, _ ->
+                        }
+                        builder.setNeutralButton("Sure") { _, _ ->
+                            activity!!.finish()
+                        }
+                        builder.setCancelable(true)
+                        builder.create()
+                        builder.show()
+                    }
+                }
+                )
+        }
         soloBtn.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.HomeToSolo)
         }
