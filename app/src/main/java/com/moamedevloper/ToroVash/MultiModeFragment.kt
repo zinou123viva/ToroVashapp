@@ -121,7 +121,6 @@ class MultiModeFragment : Fragment() {
                         } else {
                             if (delay == 1000L && quite != player){
                                 val buildera = AlertDialog.Builder(activity)
-
                             buildera.setMessage("Your friend quite the game \n You win ")
                             buildera.setPositiveButton("Ok") { _, _ ->
                                 Navigation.findNavController(view)
