@@ -295,7 +295,7 @@ class MultiModeFragment : Fragment() {
                 buildera.setMessage("You win")
                 buildera.setPositiveButton("Play Again") { _, _ ->
                     Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_createJoinFragment)
+                        .navigate(R.id.action_multiModeFragment_to_playAgain)
                     dbRef.child(choosedGameCode).removeValue()
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
@@ -318,7 +318,7 @@ class MultiModeFragment : Fragment() {
                 buildera.setMessage("You lose")
                 buildera.setPositiveButton("Play Again") { _, _ ->
                     Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_createJoinFragment)
+                        .navigate(R.id.action_multiModeFragment_to_playAgain)
                     dbRef.child(choosedGameCode).removeValue()
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
@@ -341,7 +341,7 @@ class MultiModeFragment : Fragment() {
                 buildera.setMessage("Draw")
                 buildera.setPositiveButton("Play Again") { _, _ ->
                     Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_createJoinFragment)
+                        .navigate(R.id.action_multiModeFragment_to_playAgain)
                     dbRef.child(choosedGameCode).removeValue()
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
