@@ -142,7 +142,6 @@ class MultiModeFragment : Fragment() {
     }
 
     private fun confirmbtn() {
-        timer.start()
         numberEntered = numberEntredField.text!!.toString()
         if (duplicateCount(numberEntered) > 0 || numberEntered.length != 4) {
             numberEntredField.error = "invalid input"
@@ -213,6 +212,7 @@ class MultiModeFragment : Fragment() {
                     resultToro += " \n 4T "
                     resultNumber += "\n $numberEntered "
                     numberEntredField.clearFocus()
+                    numberEntredField.isEnabled = false
                     if (player == "1") {
                         dbRef.child(choosedGameCode).child("tryPl1").setValue(numberOfTry)
                         theWinner()
@@ -284,26 +284,74 @@ class MultiModeFragment : Fragment() {
                 waitFried.isVisible = true
                 waitFried.text = "Friend Still Trying To Find Out The Number ..."
 
-            } else if (friendsTry > (numberOfTry - 1).toString()) {
+            } else if (friendsTry.toInt() > (numberOfTry - 1)) {
                 waitFried.isVisible = false
                 /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
                                 testTv.isVisible = true
-                                testTv.text = msg*/
+                                testTv.text = msg
                 Toast.makeText(activity, "You win", Toast.LENGTH_SHORT).show()
+                 */
+                val buildera = AlertDialog.Builder(activity)
+                buildera.setMessage("You win")
+                buildera.setPositiveButton("Play Again") { _, _ ->
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_multiModeFragment_to_createJoinFragment)
+                    dbRef.child(choosedGameCode).removeValue()
+                }
+                buildera.setNeutralButton("Exit"){_,_ ->
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                    dbRef.child(choosedGameCode).removeValue()
+                }
+                buildera.setCancelable(false)
+                buildera.create()
+                buildera.show()
                 delay = 0L
-            } else if (friendsTry < (numberOfTry - 1).toString()) {
+            } else if (friendsTry.toInt() < (numberOfTry - 1)) {
                 waitFried.isVisible = false
                 /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
                                 testTv.isVisible = true
-                                testTv.text = msg*/
+                                testTv.text = msg
                 Toast.makeText(activity, "You lost", Toast.LENGTH_SHORT).show()
+                */
+                val buildera = AlertDialog.Builder(activity)
+                buildera.setMessage("You lose")
+                buildera.setPositiveButton("Play Again") { _, _ ->
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_multiModeFragment_to_createJoinFragment)
+                    dbRef.child(choosedGameCode).removeValue()
+                }
+                buildera.setNeutralButton("Exit"){_,_ ->
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                    dbRef.child(choosedGameCode).removeValue()
+                }
+                buildera.setCancelable(false)
+                buildera.create()
+                buildera.show()
                 delay = 0L
             } else {
                 waitFried.isVisible = false
                 /*val msg = "friendsTry = $friendsTry\n your try = $numberOfTry"
                                 testTv.isVisible = true
-                                testTv.text = msg*/
+                                testTv.text = msg
                 Toast.makeText(activity, "Draw", Toast.LENGTH_SHORT).show()
+                 */
+                val buildera = AlertDialog.Builder(activity)
+                buildera.setMessage("Draw")
+                buildera.setPositiveButton("Play Again") { _, _ ->
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_multiModeFragment_to_createJoinFragment)
+                    dbRef.child(choosedGameCode).removeValue()
+                }
+                buildera.setNeutralButton("Exit"){_,_ ->
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                    dbRef.child(choosedGameCode).removeValue()
+                }
+                buildera.setCancelable(false)
+                buildera.create()
+                buildera.show()
                 delay = 0L
             }
 
