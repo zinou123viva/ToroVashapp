@@ -40,6 +40,7 @@ class MultiModeFragment : Fragment() {
     private lateinit var dbRef: DatabaseReference
     lateinit var player: String
     lateinit var choosedGameCode: String
+     var quite = "0"
     lateinit var timer: Chronometer
     lateinit var testTv: TextView
     lateinit var waitFried: TextView
@@ -52,10 +53,11 @@ class MultiModeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
+
         view = inflater.inflate(R.layout.fragment_multi_mode, container, false)
 
-
         inisialise()
+
         activity?.let {
             requireActivity()
                 .onBackPressedDispatcher
@@ -69,6 +71,7 @@ class MultiModeFragment : Fragment() {
                         builder.setNeutralButton("Sure") { _, _ ->
                             Navigation.findNavController(view).navigate(R.id.action_multiModeFragment_to_homePageFragment)
                             dbRef.child(choosedGameCode).removeValue()
+                            quite = player
                         }
                         builder.setCancelable(true)
                         builder.create()
@@ -77,7 +80,8 @@ class MultiModeFragment : Fragment() {
                 }
                 )
         }
-       /*val callback = object : OnBackPressedCallback(true){
+
+        /*val callback = object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 TODO("Not yet implemented")
 
@@ -86,6 +90,7 @@ class MultiModeFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callback)
         */
+
         choosedGameCode = requireArguments().getString("chosenGameCode").toString()
 
         player = requireArguments().getString("playerId").toString()
@@ -97,9 +102,44 @@ class MultiModeFragment : Fragment() {
             confirmbtn()
 
         }
+            friendQuit()
 
 
-        return view
+
+
+
+            return view
+    }
+
+    private fun friendQuit() {
+        delay = 1000L
+        RepeatHelper.repeatDelayed {
+            dbRef.child(choosedGameCode)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                        } else {
+                            if (delay == 1000L && quite != player){
+                                val buildera = AlertDialog.Builder(activity)
+
+                            buildera.setMessage("Your friend quite the game \n You win ")
+                            buildera.setPositiveButton("Ok") { _, _ ->
+                                Navigation.findNavController(view)
+                                    .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                            }
+                            buildera.setCancelable(false)
+                            buildera.create()
+                            buildera.show()
+                            }
+                            delay =0L
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+
+                })
+
+        }
     }
 
     private fun confirmbtn() {
@@ -238,7 +278,7 @@ class MultiModeFragment : Fragment() {
     }
 
     private fun theWinner() {
-        delay = 1000L
+        delay = 100L
         RepeatHelper.repeatDelayed() {
             gettingTry()
             if (friendsTry == "null") {

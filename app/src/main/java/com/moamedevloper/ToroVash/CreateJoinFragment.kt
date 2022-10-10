@@ -54,6 +54,7 @@ class CreateJoinFragment : Fragment() {
                             putString("chosenGameCode",choosedGameCode)
                             putString("playerId","1")
                         })
+
                          /*
                         val myintent = Intent(this@CreateJoinPage, MultiPlayerMode::class.java)
                         myintent.putExtra("choosedGameCode", choosedGameCode)
@@ -88,19 +89,38 @@ class CreateJoinFragment : Fragment() {
                     if (duplicateCount(choosedNum) > 0 || choosedNum.length != 4) {
                         numTv.error = "invalid number"
                     } else {
-                        dbRef.child(choosedGameCode).child("numberPl2").setValue(choosedNum)
-                        /*
-                        val myintent = Intent(this@CreateJoinPage, MultiPlayerMode::class.java)
-                        myintent.putExtra("choosedGameCode", choosedGameCode)
-                        myintent.putExtra("playerId", "2")
-                        startActivity(myintent)
-                        finish()
+                        dbRef.child(choosedGameCode).child("numberPl2")
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if (!snapshot.exists()) {
+                                        dbRef.child(choosedGameCode).child("numberPl2")
+                                            .setValue(choosedNum)
 
-                         */
-                        Navigation.findNavController(view).navigate(R.id.CreateToMul,Bundle().apply {
-                            putString("chosenGameCode",choosedGameCode)
-                            putString("playerId","2")
-                        })
+                                        /*
+                                        val myintent = Intent(this@CreateJoinPage, MultiPlayerMode::class.java)
+                                        myintent.putExtra("choosedGameCode", choosedGameCode)
+                                        myintent.putExtra("playerId", "2")
+                                        startActivity(myintent)
+                                        finish()
+
+                                         */
+
+                                        Navigation.findNavController(view)
+                                            .navigate(R.id.CreateToMul, Bundle().apply {
+                                                putString("chosenGameCode", choosedGameCode)
+                                                putString("playerId", "2")
+                                            })
+                                    } else {
+                                        codeTv.error = "You cant join this game"
+                                    }
+
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
                     }
                 } else {
                     codeTv.error = "invalid game code"

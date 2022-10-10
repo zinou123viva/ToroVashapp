@@ -36,8 +36,11 @@ class HomePageFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
+
         view = inflater.inflate(R.layout.fragment_home_page, container, false)
+
         inisilize()
+
         /*
         isConnected = arguments?.getBoolean("isConnected").toString()
         testTv.text = isConnected
@@ -62,6 +65,7 @@ class HomePageFragment : Fragment() {
 
 
          */
+
         activity?.let {
             requireActivity()
                 .onBackPressedDispatcher
@@ -82,17 +86,14 @@ class HomePageFragment : Fragment() {
                 }
                 )
         }
+
         soloBtn.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.HomeToSolo)
         }
+
         multiBtn.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.HomeToCreate)
         }
-
-
-
-
-
 
         return view
     }
