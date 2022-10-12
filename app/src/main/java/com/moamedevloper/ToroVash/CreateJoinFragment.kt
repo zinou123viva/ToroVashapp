@@ -41,8 +41,8 @@ class CreateJoinFragment : Fragment() {
         return view
     }
     private fun creatMethod() {
-        choosedGameCode = codeTv.text!!.toString()
-        choosedNum = numTv.text!!.toString()
+        choosedGameCode = codeTv.text!!.toString().trim()
+        choosedNum = numTv.text!!.toString().trim()
         dbRef.child(choosedGameCode).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!snapshot.exists()) {
@@ -62,13 +62,9 @@ class CreateJoinFragment : Fragment() {
                         startActivity(myintent)
                         finish()
                          */
-
-
-
                     }
                 }else{
                     codeTv.error="The chosen code already exist"
-
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -81,8 +77,8 @@ class CreateJoinFragment : Fragment() {
     }
 
     private fun joinMethod() {
-        choosedNum = numTv.text!!.toString()
-        choosedGameCode = codeTv.text!!.toString()
+        choosedNum = numTv.text!!.toString().trim()
+        choosedGameCode = codeTv.text!!.toString().trim()
         dbRef.child(choosedGameCode).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {

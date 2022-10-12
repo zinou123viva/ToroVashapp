@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -30,7 +31,7 @@ class MultiModeFragment : Fragment() {
     private var resultNum: String? = ""
     private var resultT: String? = ""
     private var resultV: String? = ""
-    var selectednumber = ""
+    var selectednumber :String? = null
     var numberEntered = ""
     var toro: Int = 0
     var vash: Int = 0
@@ -38,8 +39,8 @@ class MultiModeFragment : Fragment() {
     var resultToro: String = ""
     var resultVash: String = ""
     private lateinit var dbRef: DatabaseReference
-    lateinit var player: String
-    lateinit var choosedGameCode: String
+    var player: String? = null
+    var choosedGameCode: String? = null
      var quite = "0"
     lateinit var timer: Chronometer
     lateinit var testTv: TextView
@@ -56,9 +57,9 @@ class MultiModeFragment : Fragment() {
 
         view = inflater.inflate(R.layout.fragment_multi_mode, container, false)
 
-        inisialise()
+          inisialise()
 
-        activity?.let {
+         activity?.let {
             requireActivity()
                 .onBackPressedDispatcher
                 .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -70,8 +71,8 @@ class MultiModeFragment : Fragment() {
                         }
                         builder.setNeutralButton("Sure") { _, _ ->
                             Navigation.findNavController(view).navigate(R.id.action_multiModeFragment_to_homePageFragment)
-                            dbRef.child(choosedGameCode).removeValue()
-                            quite = player
+                            dbRef.child(choosedGameCode!!).removeValue()
+                            quite = player!!
                         }
                         builder.setCancelable(true)
                         builder.create()
@@ -81,6 +82,8 @@ class MultiModeFragment : Fragment() {
                 )
         }
 
+
+
         /*val callback = object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 TODO("Not yet implemented")
@@ -89,7 +92,7 @@ class MultiModeFragment : Fragment() {
 
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callback)
-        */
+       */
 
         choosedGameCode = requireArguments().getString("chosenGameCode").toString()
 
@@ -100,6 +103,8 @@ class MultiModeFragment : Fragment() {
         btnView.setOnClickListener {
 
             confirmbtn()
+
+            testTv.text = selectednumber.toString()
 
         }
             friendQuit()
@@ -114,7 +119,7 @@ class MultiModeFragment : Fragment() {
     private fun friendQuit() {
         delay = 1000L
         RepeatHelper.repeatDelayed {
-            dbRef.child(choosedGameCode)
+            dbRef.child(choosedGameCode!!)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
@@ -146,35 +151,92 @@ class MultiModeFragment : Fragment() {
         if (duplicateCount(numberEntered) > 0 || numberEntered.length != 4) {
             numberEntredField.error = "invalid input"
         } else {
-            returnedresult(selectednumber, resultNum!!, resultT!!, resultV!!)
+            returnedresult(selectednumber.toString(), resultNum!!, resultT!!, resultV!!)
         }
     }
 
     private fun gettingTheNumber() {
-        if (player == "1") {
-            dbRef.child(choosedGameCode).addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    selectednumber = snapshot.child("numberPl2").value.toString()
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                }
+        when (player) {
+            "1" -> {
+                dbRef.child(choosedGameCode!!).addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        selectednumber = snapshot.child("numberPl2").value.toString()
+                    }
 
-            })
-        } else if (player == "2") {
-            dbRef.child(choosedGameCode).addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    selectednumber = snapshot.child("numberPl1").value.toString()
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                }
+                })
+            }
+            "2" -> {
+                dbRef.child(choosedGameCode!!).addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        selectednumber = snapshot.child("numberPl1").value.toString()
+                    }
 
-            })
-        } else {
-            numberEntredField.error = "Retry with an other Code"
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+
+                })
+            }
+            else -> {
+                numberEntredField.error = "Retry with an other Code"
+            }
         }
+        /** when (player) {
+        "1" -> {
+        dbRef.child(choosedGameCode!!).child("numberPl2").addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+        if (snapshot.exists()) {
+        dbRef.child(choosedGameCode!!).addValueEventListener(object :ValueEventListener{
+        override fun onDataChange(p0: DataSnapshot) {
+        selectednumber = p0.child("numberPl2").value.toString()
+        }
+
+        override fun onCancelled(p0: DatabaseError) {
+        }
+
+        })
+        }
+        }
+        override fun onCancelled(p0: DatabaseError) {
+        TODO("Not yet implemented")
+        }
+        })
+        }
+        "2" -> {
+        dbRef.child(choosedGameCode!!).child("numberPl1").addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+        if (snapshot.exists()) {
+        dbRef.child(choosedGameCode!!).addValueEventListener(object :ValueEventListener{
+        override fun onDataChange(p0: DataSnapshot) {
+        selectednumber = p0.child("numberPl1").value.toString()
+        }
+        override fun onCancelled(p0: DatabaseError) {
+        }
+
+        })
+        }
+
+        }
+
+        override fun onCancelled(p0: DatabaseError) {
+        TODO("Not yet implemented")
+        }
+        }
+        )
+        }
+        else -> {
+        numberEntredField.error = "Retry with an other Code"
+        }
+        }
+
+         */
     }
+
+
+
 
     private fun inisialise() {
 
@@ -214,10 +276,10 @@ class MultiModeFragment : Fragment() {
                     numberEntredField.clearFocus()
                     numberEntredField.isEnabled = false
                     if (player == "1") {
-                        dbRef.child(choosedGameCode).child("tryPl1").setValue(numberOfTry)
+                        dbRef.child(choosedGameCode!!).child("tryPl1").setValue(numberOfTry)
                         theWinner()
                     } else {
-                        dbRef.child(choosedGameCode).child("tryPl2").setValue(numberOfTry)
+                        dbRef.child(choosedGameCode!!).child("tryPl2").setValue(numberOfTry)
                         theWinner()
                     }
 
@@ -294,14 +356,16 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("You win")
                 buildera.setPositiveButton("Play Again") { _, _ ->
+                    dbRef.child(choosedGameCode!!).removeValue()
                     Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_playAgain)
-                    dbRef.child(choosedGameCode).removeValue()
+                        .navigate(R.id.MultiToAgain)
+
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
+                    dbRef.child(choosedGameCode!!).removeValue()
+
                     Navigation.findNavController(view)
                         .navigate(R.id.action_multiModeFragment_to_homePageFragment)
-                    dbRef.child(choosedGameCode).removeValue()
                 }
                 buildera.setCancelable(false)
                 buildera.create()
@@ -317,14 +381,15 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("You lose")
                 buildera.setPositiveButton("Play Again") { _, _ ->
+                    dbRef.child(choosedGameCode!!).removeValue()
                     Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_playAgain)
-                    dbRef.child(choosedGameCode).removeValue()
+                        .navigate(R.id.MultiToAgain)
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
+                    dbRef.child(choosedGameCode!!).removeValue()
+
                     Navigation.findNavController(view)
                         .navigate(R.id.action_multiModeFragment_to_homePageFragment)
-                    dbRef.child(choosedGameCode).removeValue()
                 }
                 buildera.setCancelable(false)
                 buildera.create()
@@ -340,14 +405,14 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("Draw")
                 buildera.setPositiveButton("Play Again") { _, _ ->
+                    dbRef.child(choosedGameCode!!).removeValue()
                     Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_playAgain)
-                    dbRef.child(choosedGameCode).removeValue()
+                        .navigate(R.id.MultiToAgain)
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
+                    dbRef.child(choosedGameCode!!).removeValue()
                     Navigation.findNavController(view)
                         .navigate(R.id.action_multiModeFragment_to_homePageFragment)
-                    dbRef.child(choosedGameCode).removeValue()
                 }
                 buildera.setCancelable(false)
                 buildera.create()
@@ -374,7 +439,7 @@ class MultiModeFragment : Fragment() {
 
     private fun gettingTry() {
         if (player == "1") {
-            dbRef.child(choosedGameCode).addValueEventListener(object : ValueEventListener {
+            dbRef.child(choosedGameCode!!).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     friendsTry = snapshot.child("tryPl2").value.toString()
                 }
@@ -384,7 +449,7 @@ class MultiModeFragment : Fragment() {
 
             })
         } else if (player == "2") {
-            dbRef.child(choosedGameCode).addValueEventListener(object : ValueEventListener {
+            dbRef.child(choosedGameCode!!).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     friendsTry = snapshot.child("tryPl1").value.toString()
                 }

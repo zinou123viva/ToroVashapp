@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.res.TypedArrayUtils.getBoolean
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import java.lang.Boolean.getBoolean
 import java.lang.reflect.Array.getBoolean
@@ -29,6 +30,7 @@ class HomePageFragment : Fragment() {
     lateinit var soloBtn: Button
     lateinit var multiBtn: Button
     lateinit var dialogBtn: Button
+    lateinit var againBtn :Button
     lateinit var testTv:TextView
 
     override fun onCreateView(
@@ -94,6 +96,19 @@ class HomePageFragment : Fragment() {
         multiBtn.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.HomeToCreate)
         }
+        dialogBtn.setOnClickListener{
+            /** */
+
+            // Navigation.findNavController(view).navigate(R.id.HomeToMulti)
+        }
+        againBtn.setOnClickListener{
+            /*Navigation.findNavController(view).navigate(R.id.HomeToAgain,Bundle().apply {
+                putString("chosenGameCode","zinou".trim())
+                putString("playerId","1".trim())
+            })*/
+        }
+
+
 
         return view
     }
@@ -125,6 +140,7 @@ class HomePageFragment : Fragment() {
         soloBtn = view.findViewById(R.id.solo_btn)
         multiBtn = view.findViewById(R.id.multi_btn)
         dialogBtn = view.findViewById(R.id.rules_btn)
+        againBtn = view.findViewById(R.id.info_btn)
         testTv = view.findViewById(R.id.testTv1)
 
     }

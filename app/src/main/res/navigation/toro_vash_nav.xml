@@ -37,8 +37,8 @@
             android:id="@+id/action_multiModeFragment_to_homePageFragment"
             app:destination="@id/homePageFragment" />
         <action
-            android:id="@+id/action_multiModeFragment_to_playAgain"
-            app:destination="@id/playAgain" />
+            android:id="@+id/MultiToAgain"
+            app:destination="@id/playAgainFragment" />
     </fragment>
     <fragment
         android:id="@+id/createJoinFragment"
@@ -51,8 +51,16 @@
             app:launchSingleTop="false" />
     </fragment>
     <fragment
-        android:id="@+id/playAgain"
-        android:name="com.moamedevloper.ToroVash.PlayAgain"
+        android:id="@+id/playAgainFragment"
+        android:name="com.moamedevloper.ToroVash.PlayAgainFragment"
         android:label="fragment_play_again"
-        tools:layout="@layout/fragment_play_again" />
+        tools:layout="@layout/fragment_play_again" >
+        <action
+            android:id="@+id/AgainToMulti"
+            app:destination="@id/multiModeFragment"
+            app:launchSingleTop="true" />
+        <action
+            android:id="@+id/AgainToHome"
+            app:destination="@id/homePageFragment" />
+    </fragment>
 </navigation>
