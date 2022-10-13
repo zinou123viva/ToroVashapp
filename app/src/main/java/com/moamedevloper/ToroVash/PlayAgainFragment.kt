@@ -72,7 +72,7 @@ class PlayAgainFragment : DialogFragment() {
         enterBtn.setOnClickListener{
             choosedNum = numTv.text!!.toString()
             testTv.text = "chosenGameCode = $choosedGameCode \n choosedNum = $choosedNum \n playerId = $player"
-            dbRef.child(choosedGameCode).addListenerForSingleValueEvent(object : ValueEventListener {
+            dbRef.child(choosedGameCode).child(playerId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (!snapshot.exists()) {
                         if (duplicateCount(choosedNum) > 0 || choosedNum.length != 4) {
@@ -92,7 +92,7 @@ class PlayAgainFragment : DialogFragment() {
                             */
                         }
                     }else{
-                        numTv.error="Sorry you can't replay with the same room name "
+                        numTv.error="Sorry you can't replay with the same room name"
                     }
                 }
 

@@ -56,6 +56,7 @@ class MultiModeFragment : Fragment() {
     lateinit var testTv: TextView
     lateinit var waitFried: TextView
     var friendsTry = "null"
+    var playerId = ""
 
     var numberOfTry = 1
 
@@ -382,7 +383,23 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("You win")
                 buildera.setPositiveButton("Play Again") { _, _ ->
-                    dbRef.child(choosedGameCode!!).removeValue()
+                    playerId = if (player == "1") {
+                        "numberPl1"
+                    }else{
+                        "numberPl2"
+                    }
+                    dbRef.child(choosedGameCode!!).child(playerId)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (snapshot.exists()) {
+                                    dbRef.child(choosedGameCode!!).removeValue()
+                                } else {
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
                     Navigation.findNavController(view).navigate(R.id.MultiToPlayAgain,Bundle().apply {
                         putString("chosenGameCode",choosedGameCode)
                         putString("playerId",player)
@@ -408,7 +425,23 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("You lose")
                 buildera.setPositiveButton("Play Again") { _, _ ->
-                    dbRef.child(choosedGameCode!!).removeValue()
+                    playerId = if (player == "1") {
+                        "numberPl1"
+                    }else{
+                        "numberPl2"
+                    }
+                    dbRef.child(choosedGameCode!!).child(playerId)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (snapshot.exists()) {
+                                    dbRef.child(choosedGameCode!!).removeValue()
+                                } else {
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
                     Navigation.findNavController(view).navigate(R.id.MultiToPlayAgain,Bundle().apply {
                     putString("chosenGameCode",choosedGameCode)
                     putString("playerId",player)
@@ -434,7 +467,23 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("Draw")
                 buildera.setPositiveButton("Play Again") { _, _ ->
-                    dbRef.child(choosedGameCode!!).removeValue()
+                    playerId = if (player == "1") {
+                        "numberPl1"
+                    }else{
+                        "numberPl2"
+                    }
+                    dbRef.child(choosedGameCode!!).child(playerId)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (snapshot.exists()) {
+                                    dbRef.child(choosedGameCode!!).removeValue()
+                                } else {
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
                     Navigation.findNavController(view).navigate(R.id.MultiToPlayAgain,Bundle().apply {
                         putString("chosenGameCode",choosedGameCode)
                         putString("playerId",player)
