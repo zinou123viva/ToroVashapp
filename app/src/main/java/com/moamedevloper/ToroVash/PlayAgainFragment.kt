@@ -10,12 +10,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.Navigation
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-
-class PlayAgainFragment : Fragment() {
+class PlayAgainFragment : DialogFragment() {
     internal lateinit var view:View
     lateinit var numTv: TextInputEditText
     lateinit var player: String
@@ -27,12 +31,16 @@ class PlayAgainFragment : Fragment() {
     var playerId = ""
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
-
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        view  = inflater.inflate(R.layout.fragment_play_again, container, false)
+        view =  inflater.inflate(R.layout.fragment_play_again, container, false)
+
+
+
+        inisialise()
+
         activity?.let {
             requireActivity()
                 .onBackPressedDispatcher
@@ -44,7 +52,8 @@ class PlayAgainFragment : Fragment() {
                         builder.setPositiveButton("Cancel"){ _, _ ->
                         }
                         builder.setNeutralButton("Sure") { _, _ ->
-                            Navigation.findNavController(view).navigate(R.id.AgainToHome)
+                            Navigation.findNavController(view).navigate(R.id.PlayAgainToHome)
+                            dbRef.child(choosedGameCode!!).removeValue()
                         }
                         builder.setCancelable(true)
                         builder.create()
@@ -55,9 +64,6 @@ class PlayAgainFragment : Fragment() {
         }
 
 
-        inisialise()
-
-
         playerId = if (player == "1") {
             "numberPl1"
         }else{
@@ -66,15 +72,14 @@ class PlayAgainFragment : Fragment() {
         enterBtn.setOnClickListener{
             choosedNum = numTv.text!!.toString()
             testTv.text = "chosenGameCode = $choosedGameCode \n choosedNum = $choosedNum \n playerId = $player"
-            dbRef.child(choosedGameCode).addListenerForSingleValueEvent(object :
-                ValueEventListener {
+            dbRef.child(choosedGameCode).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (!snapshot.exists()) {
                         if (duplicateCount(choosedNum) > 0 || choosedNum.length != 4) {
                             numTv.error = "invalid number"
                         } else {
                             dbRef.child(choosedGameCode).child(playerId).setValue(choosedNum)
-                            Navigation.findNavController(view).navigate(R.id.AgainToMulti,Bundle().apply {
+                            Navigation.findNavController(view).navigate(R.id.PlayAgainToMulti,Bundle().apply {
                                 putString("chosenGameCode",choosedGameCode)
                                 putString("playerId",player)
                             })
@@ -95,6 +100,7 @@ class PlayAgainFragment : Fragment() {
                     TODO("Not yet implemented")
                 }
             })}
+
 
 
         return view
@@ -130,4 +136,5 @@ class PlayAgainFragment : Fragment() {
 
         return invalid.size
     }
+
 }

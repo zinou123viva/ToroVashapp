@@ -1,11 +1,15 @@
 package com.moamedevloper.ToroVash
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.Navigation
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
@@ -18,7 +22,8 @@ class CreateJoinFragment : Fragment() {
      lateinit var codeTv: TextInputEditText
      lateinit var numTv: TextInputEditText
      var choosedNum = ""
-     var choosedGameCode = ""
+    lateinit var constraintLayout  : ConstraintLayout
+    var choosedGameCode = ""
     private lateinit var dbRef: DatabaseReference
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +41,15 @@ class CreateJoinFragment : Fragment() {
             joinMethod()
         }
 
+        constraintLayout.setOnClickListener {
+            // hide soft keyboard on rot layout click
+            // it hide soft keyboard on edit text outside root layout click
+            requireActivity().hideSoftKeyboard()
+
+            // remove focus from edit text
+            codeTv.clearFocus()
+            numTv.clearFocus()
+        }
 
 
         return view
@@ -131,12 +145,19 @@ class CreateJoinFragment : Fragment() {
         })
     }
 
+    fun Activity.hideSoftKeyboard(){
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).apply {
+            hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        }
+    }
+
     private fun inisialize() {
         createBtn = view.findViewById(R.id.CreateBtn)
         joinBtn = view.findViewById(R.id.JoinBtn)
         codeTv = view.findViewById(R.id.game_code)
         numTv = view.findViewById(R.id.number_for_opponent)
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
+        constraintLayout = view.findViewById(R.id.CreatJoinCon)
     }
 
 

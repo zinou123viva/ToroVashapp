@@ -1,21 +1,29 @@
 package com.moamedevloper.ToroVash
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
-import androidx.core.os.bundleOf
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
 import java.util.*
+
 
 var delay = 0L
 
@@ -31,6 +39,8 @@ class MultiModeFragment : Fragment() {
     private var resultNum: String? = ""
     private var resultT: String? = ""
     private var resultV: String? = ""
+    lateinit var constraintLayout  : ConstraintLayout
+    lateinit var constraintLayoutScroll: ConstraintLayout
     var selectednumber :String? = null
     var numberEntered = ""
     var toro: Int = 0
@@ -52,12 +62,12 @@ class MultiModeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
         view = inflater.inflate(R.layout.fragment_multi_mode, container, false)
 
-          inisialise()
+        inisialise()
 
          activity?.let {
             requireActivity()
@@ -70,7 +80,7 @@ class MultiModeFragment : Fragment() {
                         builder.setPositiveButton("Cancel"){ _, _ ->
                         }
                         builder.setNeutralButton("Sure") { _, _ ->
-                            Navigation.findNavController(view).navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                             Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
                             dbRef.child(choosedGameCode!!).removeValue()
                             quite = player!!
                         }
@@ -81,7 +91,6 @@ class MultiModeFragment : Fragment() {
                 }
                 )
         }
-
 
 
         /*val callback = object : OnBackPressedCallback(true){
@@ -98,24 +107,39 @@ class MultiModeFragment : Fragment() {
 
         player = requireArguments().getString("playerId").toString()
 
+
         gettingTheNumber()
 
         btnView.setOnClickListener {
 
             confirmbtn()
-
-            testTv.text = selectednumber.toString()
-
         }
             friendQuit()
+        // root constraint layout click listener
+        constraintLayout.setOnClickListener {
+            // hide soft keyboard on rot layout click
+            // it hide soft keyboard on edit text outside root layout click
+            requireActivity().hideSoftKeyboard()
 
+            // remove focus from edit text
+            numberEntredField.clearFocus()
+        }
+        constraintLayoutScroll.setOnClickListener {
+            // hide soft keyboard on rot layout click
+            // it hide soft keyboard on edit text outside root layout click
+            requireActivity().hideSoftKeyboard()
 
-
-
+            // remove focus from edit text
+            numberEntredField.clearFocus()
+        }
 
             return view
     }
-
+    fun Activity.hideSoftKeyboard(){
+        (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).apply {
+            hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        }
+    }
     private fun friendQuit() {
         delay = 1000L
         RepeatHelper.repeatDelayed {
@@ -128,8 +152,7 @@ class MultiModeFragment : Fragment() {
                                 val buildera = AlertDialog.Builder(activity)
                             buildera.setMessage("Your friend quite the game \n You win ")
                             buildera.setPositiveButton("Ok") { _, _ ->
-                                Navigation.findNavController(view)
-                                    .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                                Navigation.findNavController(view) .navigate(R.id.MultiToHomePage)
                             }
                             buildera.setCancelable(false)
                             buildera.create()
@@ -249,6 +272,8 @@ class MultiModeFragment : Fragment() {
         timer = view.findViewById(R.id.simpleChronometer)
         testTv = view.findViewById(R.id.testTvMul)
         waitFried = view.findViewById(R.id.waitFriend)
+        constraintLayout = view.findViewById(R.id.container)
+        constraintLayoutScroll = view.findViewById(R.id.scrollViewCon)
     }
 
 
@@ -338,9 +363,10 @@ class MultiModeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun theWinner() {
         delay = 100L
-        RepeatHelper.repeatDelayed() {
+        RepeatHelper.repeatDelayed {
             gettingTry()
             if (friendsTry == "null") {
                 waitFried.isVisible = true
@@ -357,15 +383,16 @@ class MultiModeFragment : Fragment() {
                 buildera.setMessage("You win")
                 buildera.setPositiveButton("Play Again") { _, _ ->
                     dbRef.child(choosedGameCode!!).removeValue()
-                    Navigation.findNavController(view)
-                        .navigate(R.id.MultiToAgain)
+                    Navigation.findNavController(view).navigate(R.id.MultiToPlayAgain,Bundle().apply {
+                        putString("chosenGameCode",choosedGameCode)
+                        putString("playerId",player)
+                    })
 
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
                     dbRef.child(choosedGameCode!!).removeValue()
 
-                    Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                    Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
                 }
                 buildera.setCancelable(false)
                 buildera.create()
@@ -382,14 +409,16 @@ class MultiModeFragment : Fragment() {
                 buildera.setMessage("You lose")
                 buildera.setPositiveButton("Play Again") { _, _ ->
                     dbRef.child(choosedGameCode!!).removeValue()
-                    Navigation.findNavController(view)
-                        .navigate(R.id.MultiToAgain)
+                    Navigation.findNavController(view).navigate(R.id.MultiToPlayAgain,Bundle().apply {
+                    putString("chosenGameCode",choosedGameCode)
+                    putString("playerId",player)
+                })
+
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
                     dbRef.child(choosedGameCode!!).removeValue()
 
-                    Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                    Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
                 }
                 buildera.setCancelable(false)
                 buildera.create()
@@ -406,13 +435,14 @@ class MultiModeFragment : Fragment() {
                 buildera.setMessage("Draw")
                 buildera.setPositiveButton("Play Again") { _, _ ->
                     dbRef.child(choosedGameCode!!).removeValue()
-                    Navigation.findNavController(view)
-                        .navigate(R.id.MultiToAgain)
+                    Navigation.findNavController(view).navigate(R.id.MultiToPlayAgain,Bundle().apply {
+                        putString("chosenGameCode",choosedGameCode)
+                        putString("playerId",player)
+                    })
                 }
                 buildera.setNeutralButton("Exit"){_,_ ->
                     dbRef.child(choosedGameCode!!).removeValue()
-                    Navigation.findNavController(view)
-                        .navigate(R.id.action_multiModeFragment_to_homePageFragment)
+                    Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
                 }
                 buildera.setCancelable(false)
                 buildera.create()

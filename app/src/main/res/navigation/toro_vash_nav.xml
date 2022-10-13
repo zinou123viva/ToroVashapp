@@ -19,6 +19,9 @@
         <argument
             android:name="Data"
             app:argType="com.moamedevloper.ToroVash.Data" />
+        <action
+            android:id="@+id/HomeToPlayAgain"
+            app:destination="@id/playAgainFragment" />
     </fragment>
     <fragment
         android:id="@+id/soloModeFragment"
@@ -34,11 +37,14 @@
             android:name="chosenGameCode"
             app:argType="string" />
         <action
-            android:id="@+id/action_multiModeFragment_to_homePageFragment"
+            android:id="@+id/MultiToPlayAgain"
+            app:destination="@id/playAgainFragment" />
+        <action
+            android:id="@+id/MultiToHomePage"
             app:destination="@id/homePageFragment" />
         <action
-            android:id="@+id/MultiToAgain"
-            app:destination="@id/playAgainFragment" />
+            android:id="@+id/MultiToCreat"
+            app:destination="@id/createJoinFragment" />
     </fragment>
     <fragment
         android:id="@+id/createJoinFragment"
@@ -56,11 +62,10 @@
         android:label="fragment_play_again"
         tools:layout="@layout/fragment_play_again" >
         <action
-            android:id="@+id/AgainToMulti"
-            app:destination="@id/multiModeFragment"
-            app:launchSingleTop="true" />
+            android:id="@+id/PlayAgainToMulti"
+            app:destination="@id/multiModeFragment" />
         <action
-            android:id="@+id/AgainToHome"
+            android:id="@+id/PlayAgainToHome"
             app:destination="@id/homePageFragment" />
     </fragment>
 </navigation>
