@@ -57,6 +57,7 @@ class MultiModeFragment : Fragment() {
     lateinit var waitFried: TextView
     var friendsTry = "null"
     var playerId = ""
+    var tryId = ""
 
     var numberOfTry = 1
 
@@ -104,9 +105,7 @@ class MultiModeFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callback)
        */
 
-        choosedGameCode = requireArguments().getString("chosenGameCode").toString()
 
-        player = requireArguments().getString("playerId").toString()
 
 
         gettingTheNumber()
@@ -276,6 +275,15 @@ class MultiModeFragment : Fragment() {
         waitFried = view.findViewById(R.id.waitFriend)
         constraintLayout = view.findViewById(R.id.container)
         constraintLayoutScroll = view.findViewById(R.id.scrollViewCon)
+        choosedGameCode = requireArguments().getString("chosenGameCode").toString()
+        player = requireArguments().getString("playerId").toString()
+        if (player == "1") {
+            playerId = "numberPl1"
+            tryId = "tryPl1"
+        }else{
+            playerId = "numberPl2"
+            tryId = "tryPl1"
+        }
     }
 
 
@@ -385,17 +393,12 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("You win")
                 buildera.setPositiveButton("Play Again") { _, _ ->
-                    playerId = if (player == "1") {
-                        "numberPl1"
-                    }else{
-                        "numberPl2"
-                    }
                     dbRef.child(choosedGameCode!!).child(playerId)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (snapshot.exists()) {
-                                    dbRef.child(choosedGameCode!!).removeValue()
-                                } else {
+                                    dbRef.child(choosedGameCode!!).child(playerId).removeValue()
+                                    dbRef.child(choosedGameCode!!).child(tryId).removeValue()                                } else {
                                 }
                             }
                             override fun onCancelled(error: DatabaseError) {
@@ -427,17 +430,12 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("You lose")
                 buildera.setPositiveButton("Play Again") { _, _ ->
-                    playerId = if (player == "1") {
-                        "numberPl1"
-                    }else{
-                        "numberPl2"
-                    }
                     dbRef.child(choosedGameCode!!).child(playerId)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (snapshot.exists()) {
-                                    dbRef.child(choosedGameCode!!).removeValue()
-                                } else {
+                                    dbRef.child(choosedGameCode!!).child(playerId).removeValue()
+                                    dbRef.child(choosedGameCode!!).child(tryId).removeValue()                                } else {
                                 }
                             }
                             override fun onCancelled(error: DatabaseError) {
@@ -469,16 +467,12 @@ class MultiModeFragment : Fragment() {
                 val buildera = AlertDialog.Builder(activity)
                 buildera.setMessage("Draw")
                 buildera.setPositiveButton("Play Again") { _, _ ->
-                    playerId = if (player == "1") {
-                        "numberPl1"
-                    }else{
-                        "numberPl2"
-                    }
                     dbRef.child(choosedGameCode!!).child(playerId)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (snapshot.exists()) {
-                                    dbRef.child(choosedGameCode!!).removeValue()
+                                    dbRef.child(choosedGameCode!!).child(playerId).removeValue()
+                                    dbRef.child(choosedGameCode!!).child(tryId).removeValue()
                                 } else {
                                 }
                             }

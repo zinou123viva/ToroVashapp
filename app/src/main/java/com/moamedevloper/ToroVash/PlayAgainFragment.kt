@@ -100,10 +100,38 @@ class PlayAgainFragment : DialogFragment() {
                     TODO("Not yet implemented")
                 }
             })}
-
+        friendQuit()
 
 
         return view
+    }
+    private fun friendQuit() {
+        delay = 1000L
+        MultiModeFragment.RepeatHelper.repeatDelayed {
+            dbRef.child(choosedGameCode!!)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                        } else {
+                            if (delay == 1000L){
+                                val buildera = AlertDialog.Builder(activity)
+                                buildera.setMessage("Your friend don't want to play again")
+                                buildera.setPositiveButton("Ok") { _, _ ->
+                                    Navigation.findNavController(view) .navigate(R.id.PlayAgainToHome)
+                                }
+                                buildera.setCancelable(false)
+                                buildera.create()
+                                buildera.show()
+                            }
+                            delay =0L
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+
+                })
+
+        }
     }
     private fun inisialise() {
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
