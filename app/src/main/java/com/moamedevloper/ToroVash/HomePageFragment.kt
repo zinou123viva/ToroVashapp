@@ -102,10 +102,10 @@ class HomePageFragment : Fragment() {
             // Navigation.findNavController(view).navigate(R.id.HomeToMulti)
         }
         againBtn.setOnClickListener{
-            Navigation.findNavController(view).navigate(R.id.HomeToPlayAgain,Bundle().apply {
+            /**Navigation.findNavController(view).navigate(R.id.HomeToPlayAgain,Bundle().apply {
                 putString("chosenGameCode","zinou".trim())
                 putString("playerId","1".trim())
-            })
+            })*/
         }
 
 

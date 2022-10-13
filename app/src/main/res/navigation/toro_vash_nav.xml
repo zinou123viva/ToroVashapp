@@ -19,9 +19,6 @@
         <argument
             android:name="Data"
             app:argType="com.moamedevloper.ToroVash.Data" />
-        <action
-            android:id="@+id/HomeToPlayAgain"
-            app:destination="@id/playAgainFragment" />
     </fragment>
     <fragment
         android:id="@+id/soloModeFragment"
