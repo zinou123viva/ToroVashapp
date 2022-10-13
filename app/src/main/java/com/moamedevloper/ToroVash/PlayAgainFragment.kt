@@ -38,7 +38,6 @@ class PlayAgainFragment : DialogFragment() {
         view =  inflater.inflate(R.layout.fragment_play_again, container, false)
 
 
-
         inisialise()
 
         activity?.let {
@@ -143,6 +142,8 @@ class PlayAgainFragment : DialogFragment() {
         enterBtn = view.findViewById(R.id.BackToGame)
 
         choosedGameCode = requireArguments().getString("chosenGameCode").toString()
+
+        (requireActivity() as MainActivity).gameCode = choosedGameCode
 
         player = requireArguments().getString("playerId").toString()
     }

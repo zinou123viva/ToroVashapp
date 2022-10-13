@@ -284,6 +284,7 @@ class MultiModeFragment : Fragment() {
             playerId = "numberPl2"
             tryId = "tryPl1"
         }
+        (requireActivity() as MainActivity).gameCode = choosedGameCode!!
     }
 
 
