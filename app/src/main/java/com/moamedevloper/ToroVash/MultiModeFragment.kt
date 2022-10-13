@@ -116,6 +116,7 @@ class MultiModeFragment : Fragment() {
             confirmbtn()
         }
             friendQuit()
+
         // root constraint layout click listener
         constraintLayout.setOnClickListener {
             // hide soft keyboard on rot layout click
@@ -367,6 +368,7 @@ class MultiModeFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun theWinner() {
         delay = 100L
+        friendQuit()
         RepeatHelper.repeatDelayed {
             gettingTry()
             if (friendsTry == "null") {
