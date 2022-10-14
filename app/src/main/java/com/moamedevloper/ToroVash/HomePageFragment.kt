@@ -18,7 +18,6 @@ class HomePageFragment : Fragment() {
     lateinit var multiBtn: Button
     lateinit var dialogBtn: Button
     lateinit var againBtn :Button
-    lateinit var testTv:TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -110,7 +109,6 @@ class HomePageFragment : Fragment() {
         multiBtn = view.findViewById(R.id.multi_btn)
         dialogBtn = view.findViewById(R.id.rules_btn)
         againBtn = view.findViewById(R.id.info_btn)
-        testTv = view.findViewById(R.id.testTv1)
 
     }
 

@@ -48,7 +48,6 @@ class MultiModeFragment : Fragment() {
     var choosedGameCode: String? = null
      var quite = "0"
     lateinit var timer: Chronometer
-    lateinit var testTv: TextView
     lateinit var waitFried: TextView
     var friendsTry = "null"
     var playerId = ""
@@ -265,7 +264,6 @@ class MultiModeFragment : Fragment() {
         btnView = view.findViewById(R.id.button)
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
         timer = view.findViewById(R.id.simpleChronometer)
-        testTv = view.findViewById(R.id.testTvMul)
         waitFried = view.findViewById(R.id.waitFriend)
         constraintLayout = view.findViewById(R.id.container)
         constraintLayoutScroll = view.findViewById(R.id.scrollViewCon)
