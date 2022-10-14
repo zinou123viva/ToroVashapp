@@ -26,8 +26,11 @@ class HomePageFragment : Fragment() {
 
         view = inflater.inflate(R.layout.fragment_home_page, container, false)
 
+
+
         inisilize()
 
+        (requireActivity() as MainActivity).enable(multiBtn)
         /*
         isConnected = arguments?.getBoolean("isConnected").toString()
         testTv.text = isConnected

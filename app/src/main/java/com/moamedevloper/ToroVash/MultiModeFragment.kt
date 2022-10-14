@@ -65,7 +65,11 @@ class MultiModeFragment : Fragment() {
 
         inisialise()
 
-         activity?.let {
+        (requireActivity() as MainActivity).fragment = "multiMode"
+        (requireActivity() as MainActivity).view = view
+
+
+        activity?.let {
             requireActivity()
                 .onBackPressedDispatcher
                 .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -108,7 +112,7 @@ class MultiModeFragment : Fragment() {
 
             confirmbtn()
         }
-            friendQuit()
+        friendQuit()
         /** hide the key board when the user click outside the edit text fields */
         // root constraint layout click listener
         constraintLayout.setOnClickListener {

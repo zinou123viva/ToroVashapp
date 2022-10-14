@@ -52,6 +52,9 @@
             android:id="@+id/CreateToMul"
             app:destination="@id/multiModeFragment"
             app:launchSingleTop="false" />
+        <action
+            android:id="@+id/CreateToHome"
+            app:destination="@id/homePageFragment" />
     </fragment>
     <fragment
         android:id="@+id/playAgainFragment"

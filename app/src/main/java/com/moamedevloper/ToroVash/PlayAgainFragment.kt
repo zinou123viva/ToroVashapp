@@ -42,6 +42,11 @@ class PlayAgainFragment : DialogFragment() {
 
         inisialise()
 
+
+        (requireActivity() as MainActivity).fragment = "playAgain"
+        (requireActivity() as MainActivity).view = view
+
+
         // On back press customize
         activity?.let {
             requireActivity()
@@ -128,7 +133,7 @@ class PlayAgainFragment : DialogFragment() {
             dbRef.child(choosedGameCode)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
+                        if (!snapshot.exists()) {
                             if (delay == 100L){
                                 val builder = AlertDialog.Builder(activity)
                                 builder.setMessage("Your friend don't want to play again")

@@ -34,6 +34,9 @@ class CreateJoinFragment : Fragment() {
 
         inisialize()
 
+        (requireActivity() as MainActivity).fragment = "createJoin"
+        (requireActivity() as MainActivity).view = view
+
 
         createBtn.setOnClickListener {
             creatMethod()
@@ -51,7 +54,6 @@ class CreateJoinFragment : Fragment() {
             codeTv.clearFocus()
             numTv.clearFocus()
         }
-
 
         return view
     }
