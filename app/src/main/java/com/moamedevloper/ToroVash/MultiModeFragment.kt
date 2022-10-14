@@ -110,7 +110,7 @@ class MultiModeFragment : Fragment() {
             confirmbtn()
         }
             friendQuit()
-
+        /** hide the key board when the user click outside the edit text fields */
         // root constraint layout click listener
         constraintLayout.setOnClickListener {
             // hide soft keyboard on rot layout click
@@ -278,7 +278,7 @@ class MultiModeFragment : Fragment() {
             playerId = "numberPl2"
             tryId = "tryPl1"
         }
-        //access a activity variable from fragment
+        /** access a activity variable from fragment */
         (requireActivity() as MainActivity).gameCode = choosedGameCode!!
     }
 
@@ -422,9 +422,11 @@ class MultiModeFragment : Fragment() {
                                 testTv.text = msg
                 Toast.makeText(activity, "You lost", Toast.LENGTH_SHORT).show()
                 */
-                val buildera = AlertDialog.Builder(activity)
-                buildera.setMessage("You lose")
-                buildera.setPositiveButton("Play Again") { _, _ ->
+
+                /** alert message */
+                val builder = AlertDialog.Builder(activity)
+                builder.setMessage("You lose")
+                builder.setPositiveButton("Play Again") { _, _ ->
                     dbRef.child(choosedGameCode!!).child(playerId)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
@@ -443,14 +445,14 @@ class MultiModeFragment : Fragment() {
                 })
 
                 }
-                buildera.setNeutralButton("Exit"){_,_ ->
+                builder.setNeutralButton("Exit"){_,_ ->
                     dbRef.child(choosedGameCode!!).removeValue()
 
                     Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
                 }
-                buildera.setCancelable(false)
-                buildera.create()
-                buildera.show()
+                builder.setCancelable(false)
+                builder.create()
+                builder.show()
                 delay = 0L
             } else {
                 waitFried.isVisible = false
@@ -459,9 +461,9 @@ class MultiModeFragment : Fragment() {
                                 testTv.text = msg
                 Toast.makeText(activity, "Draw", Toast.LENGTH_SHORT).show()
                  */
-                val buildera = AlertDialog.Builder(activity)
-                buildera.setMessage("Draw")
-                buildera.setPositiveButton("Play Again") { _, _ ->
+                val builder = AlertDialog.Builder(activity)
+                builder.setMessage("Draw")
+                builder.setPositiveButton("Play Again") { _, _ ->
                     dbRef.child(choosedGameCode!!).child(playerId)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
@@ -479,19 +481,19 @@ class MultiModeFragment : Fragment() {
                         putString("playerId",player)
                     })
                 }
-                buildera.setNeutralButton("Exit"){_,_ ->
+                builder.setNeutralButton("Exit"){_,_ ->
                     dbRef.child(choosedGameCode!!).removeValue()
                     Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
                 }
-                buildera.setCancelable(false)
-                buildera.create()
-                buildera.show()
+                builder.setCancelable(false)
+                builder.create()
+                builder.show()
                 delay = 0L
             }
 
         }
     }
-
+    /** fun to repeat something every -delay- 1000L ==> 1 sec */
     object RepeatHelper {
         @Suppress("DEPRECATION")
         fun repeatDelayed(todo: () -> Unit) {
@@ -507,6 +509,8 @@ class MultiModeFragment : Fragment() {
         }
     }
 
+
+    /** getting a value from the realtime data base  */
     private fun gettingTry() {
         if (player == "1") {
             dbRef.child(choosedGameCode!!).addValueEventListener(object : ValueEventListener {

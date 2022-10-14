@@ -47,12 +47,13 @@ class MainActivity : AppCompatActivity() {
 
     }
     override fun onDestroy() {
-        /// do smthng
+        /** do something before activity destroyed */
         dbRef.child(gameCode).removeValue()
         super.onDestroy()
     }
 
     @Suppress("DEPRECATION")
+    /** Hide the System Bars (Back Button, Home Button ...) */
     private fun hideSystemBars() {
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,

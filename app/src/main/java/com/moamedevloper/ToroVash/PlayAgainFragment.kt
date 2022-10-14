@@ -1,14 +1,17 @@
 package com.moamedevloper.ToroVash
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.Navigation
 import com.google.android.material.textfield.TextInputEditText
@@ -24,9 +27,9 @@ class PlayAgainFragment : DialogFragment() {
     lateinit var player: String
     lateinit var enterBtn: Button
     lateinit var choosedGameCode: String
-    lateinit var testTv: TextView
     private lateinit var dbRef: DatabaseReference
     var choosedNum = ""
+    lateinit var playAgainCon : ConstraintLayout
     var playerId = ""
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -39,6 +42,7 @@ class PlayAgainFragment : DialogFragment() {
 
         inisialise()
 
+        // On back press customize
         activity?.let {
             requireActivity()
                 .onBackPressedDispatcher
@@ -51,6 +55,7 @@ class PlayAgainFragment : DialogFragment() {
                         }
                         builder.setNeutralButton("Sure") { _, _ ->
                             Navigation.findNavController(view).navigate(R.id.PlayAgainToHome)
+                            // remove value -choosedGameCode- from the realtime data base
                             dbRef.child(choosedGameCode).removeValue()
                         }
                         builder.setCancelable(true)
@@ -69,7 +74,7 @@ class PlayAgainFragment : DialogFragment() {
         }
         enterBtn.setOnClickListener{
             choosedNum = numTv.text!!.toString()
-            testTv.text = "chosenGameCode = $choosedGameCode \n choosedNum = $choosedNum \n playerId = $player"
+            // testTv.text = "chosenGameCode = $choosedGameCode \n choosedNum = $choosedNum \n playerId = $player"
             dbRef.child(choosedGameCode).child(playerId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (!snapshot.exists()) {
@@ -99,26 +104,40 @@ class PlayAgainFragment : DialogFragment() {
                 }
             })}
         friendQuit()
+        playAgainCon.setOnClickListener {
+            // hide soft keyboard on rot layout click
+            // it hide soft keyboard on edit text outside root layout click
+            requireActivity().hideSoftKeyboard()
+
+            // remove focus from edit text
+            numTv.clearFocus()
+        }
 
 
         return view
     }
+    private fun Activity.hideSoftKeyboard(){
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).apply {
+            hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        }
+    }
     private fun friendQuit() {
-        delay = 1000L
+        delay = 100L
+        /** fun to repeat something every -delay- 1000L ==> 1 sec */
         MultiModeFragment.RepeatHelper.repeatDelayed {
             dbRef.child(choosedGameCode)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
-                            if (delay == 1000L){
-                                val buildera = AlertDialog.Builder(activity)
-                                buildera.setMessage("Your friend don't want to play again")
-                                buildera.setPositiveButton("Ok") { _, _ ->
+                            if (delay == 100L){
+                                val builder = AlertDialog.Builder(activity)
+                                builder.setMessage("Your friend don't want to play again")
+                                builder.setPositiveButton("Ok") { _, _ ->
                                     Navigation.findNavController(view) .navigate(R.id.PlayAgainToHome)
                                 }
-                                buildera.setCancelable(false)
-                                buildera.create()
-                                buildera.show()
+                                builder.setCancelable(false)
+                                builder.create()
+                                builder.show()
                             }
                             delay =0L
                         }
@@ -135,15 +154,18 @@ class PlayAgainFragment : DialogFragment() {
 
         numTv = view.findViewById(R.id.game_code)
 
-        testTv = view.findViewById(R.id.testTvAgain)
-
         enterBtn = view.findViewById(R.id.BackToGame)
 
+        /** get the argument sent from the previous fragment */
         choosedGameCode = requireArguments().getString("chosenGameCode").toString()
 
+
+        /** access and change an activity variable from fragment  */
         (requireActivity() as MainActivity).gameCode = choosedGameCode
 
         player = requireArguments().getString("playerId").toString()
+
+        playAgainCon = view.findViewById(R.id.PlayAgainCon)
     }
     private fun duplicateCount(text: String): Int {
         val invalid = ArrayList<Char>()

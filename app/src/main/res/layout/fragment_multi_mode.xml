@@ -224,19 +224,6 @@
         app:layout_constraintVertical_bias="0.527" />
 
     <TextView
-        android:id="@+id/testTvMul"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintEnd_toStartOf="@+id/button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button" />
-
-    <TextView
         android:id="@+id/waitFriend"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

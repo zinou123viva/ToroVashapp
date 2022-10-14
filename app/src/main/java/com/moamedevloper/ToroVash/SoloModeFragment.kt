@@ -36,8 +36,11 @@ class SoloModeFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_solo_mode, container, false)
-        inisialise()
+        
+        initialise()
+        
         newgame(sinew)
+        
         num= selectednumber
 
 
@@ -74,8 +77,8 @@ class SoloModeFragment : Fragment() {
         }
     }
 
-    private fun inisialise() {
-
+    private fun initialise() {
+        /** initialise in fragment */
         numberEntredField = view.findViewById(R.id.number_enterd)
         recentTryToroField = view.findViewById(R.id.Recent_try_answer_toro)
         recentTryVashField = view.findViewById(R.id.Recent_try_answer_vash)
@@ -100,7 +103,9 @@ class SoloModeFragment : Fragment() {
                     resultVash += " \n\n  "
                     resultToro += " \n 4T "
                     resultNumber += "\n $numberEntered"
+                    // clear focus from the edit text fields
                     numberEntredField.clearFocus()
+
                     /*
                     //to force hide keyboard
 
@@ -150,23 +155,26 @@ class SoloModeFragment : Fragment() {
                 recentTryToroField.setText(resultToro)
                 recentTryVashField.setText(resultVash)
                 sinew=true
+
                 /*
           set line through
             if (toro == 0 && vash == 0) {
                 recentTryNumberField.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG))
             }*/
+
                 toro = 0
                 vash = 0
                 numberEntredField.text!!.clear()
             } else {
+                // set an error message in the text fields
                 numberEntredField.error = "number required"
             }
         } else {
             numberEntredField.error = "number not generated"
         }
     }
-
-    fun duplicateCount(text: String): Int {
+    /** Detect if the field contain duplicated character */
+    private fun duplicateCount(text: String): Int {
         val invalid = ArrayList<Char>()
 
         for (i in text.indices) {

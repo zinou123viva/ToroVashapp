@@ -31,6 +31,7 @@ class CreateJoinFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_create_join, container, false)
+
         inisialize()
 
 
@@ -91,20 +92,24 @@ class CreateJoinFragment : Fragment() {
     }
 
     private fun joinMethod() {
+        /** get the string from the text fields without spaces on the (first,end) */
         choosedNum = numTv.text!!.toString().trim()
         choosedGameCode = codeTv.text!!.toString().trim()
+
+        /** detect if the last child exists in the data base */
         dbRef.child(choosedGameCode).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     if (duplicateCount(choosedNum) > 0 || choosedNum.length != 4) {
                         numTv.error = "invalid number"
                     } else {
+                        // detect if the last child exists in the data base
                         dbRef.child(choosedGameCode).child("numberPl2")
                             .addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     if (!snapshot.exists()) {
-                                        dbRef.child(choosedGameCode).child("numberPl2")
-                                            .setValue(choosedNum)
+                                        // set a value To the last child in the data base
+                                        dbRef.child(choosedGameCode).child("numberPl2").setValue(choosedNum)
 
                                         /*
                                         val myintent = Intent(this@CreateJoinPage, MultiPlayerMode::class.java)
@@ -115,8 +120,9 @@ class CreateJoinFragment : Fragment() {
 
                                          */
 
-                                        Navigation.findNavController(view)
-                                            .navigate(R.id.CreateToMul, Bundle().apply {
+
+                                        // Move from fragment to an other and pass data
+                                        Navigation.findNavController(view).navigate(R.id.CreateToMul, Bundle().apply {
                                                 putString("chosenGameCode", choosedGameCode)
                                                 putString("playerId", "2")
                                             })
@@ -145,7 +151,8 @@ class CreateJoinFragment : Fragment() {
         })
     }
 
-    fun Activity.hideSoftKeyboard(){
+    // hide key Board
+    private fun Activity.hideSoftKeyboard(){
         (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).apply {
             hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         }
@@ -156,6 +163,7 @@ class CreateJoinFragment : Fragment() {
         joinBtn = view.findViewById(R.id.JoinBtn)
         codeTv = view.findViewById(R.id.game_code)
         numTv = view.findViewById(R.id.number_for_opponent)
+        // get a reference of the realtime data base
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
         constraintLayout = view.findViewById(R.id.CreatJoinCon)
     }

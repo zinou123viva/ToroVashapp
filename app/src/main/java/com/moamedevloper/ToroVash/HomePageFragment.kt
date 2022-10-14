@@ -55,6 +55,9 @@ class HomePageFragment : Fragment() {
 
          */
 
+
+
+        /** On back press customize */
         activity?.let {
             requireActivity()
                 .onBackPressedDispatcher
@@ -84,15 +87,15 @@ class HomePageFragment : Fragment() {
             Navigation.findNavController(view).navigate(R.id.HomeToCreate)
         }
         dialogBtn.setOnClickListener{
-            /** */
-
             // Navigation.findNavController(view).navigate(R.id.HomeToMulti)
         }
         againBtn.setOnClickListener{
-            /**Navigation.findNavController(view).navigate(R.id.HomeToPlayAgain,Bundle().apply {
+
+            /*Navigation.findNavController(view).navigate(R.id.HomeToPlayAgain,Bundle().apply {
                 putString("chosenGameCode","zinou".trim())
                 putString("playerId","1".trim())
             })*/
+
         }
 
 
