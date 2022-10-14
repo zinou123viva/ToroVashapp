@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
         testTv = findViewById(R.id.testTv)
+        hideSystemBars()
+
        /* val homeFrament : Fragment =HomePageFragment()
         val bundle = Bundle()
         bundle.putBoolean("isConnected",true)
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    @Suppress("DEPRECATION")
     private fun hideSystemBars() {
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,

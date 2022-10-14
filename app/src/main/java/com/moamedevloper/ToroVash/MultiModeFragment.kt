@@ -3,20 +3,16 @@ package com.moamedevloper.ToroVash
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -34,7 +30,6 @@ class MultiModeFragment : Fragment() {
     private lateinit var recentTryVashField: TextInputEditText
     private lateinit var recentTryNumberField: TextInputEditText
     private lateinit var btnView: Button
-    private lateinit var toolbar: Toolbar
     private var sinew = true
     private var resultNum: String? = ""
     private var resultT: String? = ""
@@ -147,17 +142,16 @@ class MultiModeFragment : Fragment() {
             dbRef.child(choosedGameCode!!)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                        } else {
+                        if (!snapshot.exists()) {
                             if (delay == 1000L && quite != player){
                                 val buildera = AlertDialog.Builder(activity)
-                            buildera.setMessage("Your friend quite the game \n You win ")
-                            buildera.setPositiveButton("Ok") { _, _ ->
-                                Navigation.findNavController(view) .navigate(R.id.MultiToHomePage)
-                            }
-                            buildera.setCancelable(false)
-                            buildera.create()
-                            buildera.show()
+                                buildera.setMessage("Your friend quite the game \n You win ")
+                                buildera.setPositiveButton("Ok") { _, _ ->
+                                    Navigation.findNavController(view) .navigate(R.id.MultiToHomePage)
+                                }
+                                buildera.setCancelable(false)
+                                buildera.create()
+                                buildera.show()
                             }
                             delay =0L
                         }
@@ -284,6 +278,7 @@ class MultiModeFragment : Fragment() {
             playerId = "numberPl2"
             tryId = "tryPl1"
         }
+        //access a activity variable from fragment
         (requireActivity() as MainActivity).gameCode = choosedGameCode!!
     }
 
@@ -399,8 +394,7 @@ class MultiModeFragment : Fragment() {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (snapshot.exists()) {
                                     dbRef.child(choosedGameCode!!).child(playerId).removeValue()
-                                    dbRef.child(choosedGameCode!!).child(tryId).removeValue()                                } else {
-                                }
+                                    dbRef.child(choosedGameCode!!).child(tryId).removeValue()                                }
                             }
                             override fun onCancelled(error: DatabaseError) {
                                 TODO("Not yet implemented")
@@ -436,7 +430,7 @@ class MultiModeFragment : Fragment() {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (snapshot.exists()) {
                                     dbRef.child(choosedGameCode!!).child(playerId).removeValue()
-                                    dbRef.child(choosedGameCode!!).child(tryId).removeValue()                                } else {
+                                    dbRef.child(choosedGameCode!!).child(tryId).removeValue()
                                 }
                             }
                             override fun onCancelled(error: DatabaseError) {
@@ -474,7 +468,6 @@ class MultiModeFragment : Fragment() {
                                 if (snapshot.exists()) {
                                     dbRef.child(choosedGameCode!!).child(playerId).removeValue()
                                     dbRef.child(choosedGameCode!!).child(tryId).removeValue()
-                                } else {
                                 }
                             }
                             override fun onCancelled(error: DatabaseError) {
@@ -500,6 +493,7 @@ class MultiModeFragment : Fragment() {
     }
 
     object RepeatHelper {
+        @Suppress("DEPRECATION")
         fun repeatDelayed(todo: () -> Unit) {
             val handler = Handler()
             handler.postDelayed(object : Runnable {

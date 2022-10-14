@@ -3,7 +3,6 @@ package com.moamedevloper.ToroVash
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +32,7 @@ class PlayAgainFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_play_again, container, false)
 
@@ -52,7 +51,7 @@ class PlayAgainFragment : DialogFragment() {
                         }
                         builder.setNeutralButton("Sure") { _, _ ->
                             Navigation.findNavController(view).navigate(R.id.PlayAgainToHome)
-                            dbRef.child(choosedGameCode!!).removeValue()
+                            dbRef.child(choosedGameCode).removeValue()
                         }
                         builder.setCancelable(true)
                         builder.create()
@@ -107,11 +106,10 @@ class PlayAgainFragment : DialogFragment() {
     private fun friendQuit() {
         delay = 1000L
         MultiModeFragment.RepeatHelper.repeatDelayed {
-            dbRef.child(choosedGameCode!!)
+            dbRef.child(choosedGameCode)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
-                        } else {
                             if (delay == 1000L){
                                 val buildera = AlertDialog.Builder(activity)
                                 buildera.setMessage("Your friend don't want to play again")
