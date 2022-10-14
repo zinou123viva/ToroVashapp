@@ -111,6 +111,7 @@ class HomePageFragment : Fragment() {
         multiBtn = view.findViewById(R.id.multi_btn)
         dialogBtn = view.findViewById(R.id.rules_btn)
         againBtn = view.findViewById(R.id.info_btn)
+        (requireActivity() as MainActivity).fragment = "HomePage"
 
     }
 

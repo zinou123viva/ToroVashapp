@@ -47,6 +47,7 @@ class MultiModeFragment : Fragment() {
     var player: String? = null
     var choosedGameCode: String? = null
      var quite = "0"
+    var conct = 1
     lateinit var timer: Chronometer
     lateinit var waitFried: TextView
     var friendsTry = "null"
@@ -83,6 +84,7 @@ class MultiModeFragment : Fragment() {
                              Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
                             dbRef.child(choosedGameCode!!).removeValue()
                             quite = player!!
+                            conct = 0
                         }
                         builder.setCancelable(true)
                         builder.create()
@@ -141,6 +143,9 @@ class MultiModeFragment : Fragment() {
     }
     private fun friendQuit() {
         delay = 1000L
+        if (conct == 1 ){
+            quite = player.toString()
+        }
         RepeatHelper.repeatDelayed {
             dbRef.child(choosedGameCode!!)
                 .addListenerForSingleValueEvent(object : ValueEventListener {

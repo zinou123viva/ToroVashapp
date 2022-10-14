@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 class MainActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     lateinit var testTv:TextView
-    lateinit var fragment: String
+    var fragment: String = ""
     lateinit var view :View
     private lateinit var dbRef: DatabaseReference
     var gameCode = ""
@@ -25,27 +25,29 @@ class MainActivity : AppCompatActivity() {
         dbRef = FirebaseDatabase.getInstance().getReference("gameCodes")
         testTv = findViewById(R.id.testTv)
         hideSystemBars()
+        if (fragment != "HomePage"){
+            val networkConnection = com.moamedevloper.ToroVash.NetworkConnection(applicationContext)
+            networkConnection.observe(this) { isConnected ->
+                if (!isConnected) {
+                    when (fragment) {
+                        "createJoin" -> {
+                            Navigation.findNavController(view).navigate(R.id.CreateToHome)
+                        }
+                        "multiMode" -> {
+                            Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
+                            dbRef.child(gameCode).removeValue()
 
-        val networkConnection = NetworkConnection(applicationContext)
-        networkConnection.observe(this) { isConnected ->
-            if (!isConnected) {
-                when (fragment) {
-                    "createJoin" -> {
-                        Navigation.findNavController(view).navigate(R.id.CreateToHome)
+                        }
+                        "playAgain" -> {
+                            Navigation.findNavController(view).navigate(R.id.PlayAgainToHome)
+                            dbRef.child(gameCode).removeValue()
+                        }
                     }
-                    "multiMode" -> {
-                        Navigation.findNavController(view).navigate(R.id.MultiToHomePage)
-                        dbRef.child(gameCode).removeValue()
 
-                    }
-                    "playAgain" -> {
-                        Navigation.findNavController(view).navigate(R.id.PlayAgainToHome)
-                        dbRef.child(gameCode).removeValue()
-                    }
                 }
-
             }
         }
+
         /* val homeFrament : Fragment =HomePageFragment()
          val bundle = Bundle()
          bundle.putBoolean("isConnected",true)
